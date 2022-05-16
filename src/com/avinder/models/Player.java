@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
+import static com.avinder.models.Game.*;
+
 public class Player {
     private List<Path> movesList;
     private String name;
@@ -42,35 +44,57 @@ public class Player {
         return new Player(playerName,0,new ArrayList<>());
     }
 
-    public boolean checkBitBySnake(Board board,int currPos){
-        Snake possibleSnake = board.snakeMap.get(currPos);
-        if(possibleSnake == null )
+    public boolean checkObject(Board board,int currentPos, int rollOut){
+        Object object = board.objectMap.get(currentPos);
+        Snake snake = null;
+        Ladder ladder = null;
+        if(object instanceof Snake){
+            snake = (Snake) object;
+        }
+        if(object instanceof Ladder){
+            ladder = (Ladder) object;
+        }
+
+        if(snake == null && ladder == null)
             return false;
-        this.currPos =  possibleSnake.getPath().to;
-        System.out.println(String.format("%s got bitten by Snake %s",getName(),possibleSnake));
+
+        if(snake !=null) {
+            this.currPos = snake.getPath().getTo();
+            System.out.println(String.format("%s got bitten by %s", getName(), snake));
+            this.movesList.add(new Path(currentPos - rollOut, currPos));
+        }
+        if(ladder !=null) {
+            this.currPos = ladder.getPath().getTo();
+            System.out.println(String.format("%s climbed %s", getName(), ladder));
+            this.movesList.add(new Path(currentPos - rollOut, currPos));
+        }
         return true;
     }
 
-    public void makeMove(Board board, int initialPos) throws InterruptedException {
+    public void makeMove(Board board, int initialPos, int sixCount) throws InterruptedException {
         if(currPos == board.getSize())
             return;
+        if(sixCount == SIX_COUNT_LIMIT) {
+            currPos = initialPos;
+            return;
+        }
 
-        int rollOut = 1+ new Random().nextInt(6);
+        int rollOut = 1+ new Random().nextInt(DICE_LIMIT);
         System.out.println("Rolled number by " + this.getName() + " is " + rollOut);
-
         Thread.sleep(1000);
         int prevPos = this.getCurrPos();
         this.currPos += rollOut;
 
-        if(checkBitBySnake(board,currPos) == true)
+        if(checkObject(board,currPos,rollOut) == true)
             return;
+
         if(currPos > board.getSize()) {
             currPos = initialPos;
             return;
         }
         this.movesList.add(new Path(prevPos,currPos));
         if(rollOut == 6)
-            makeMove(board,initialPos);
+            makeMove(board,initialPos,sixCount+1);
     }
 
     public boolean checkPlayerWon(Board board){
@@ -84,6 +108,10 @@ public class Player {
     protected static List<Player> initializePlayers(Scanner scan){
         System.out.println("Enter No of Players");
         int playersCount = scan.nextInt();
+        while(playersCount<=0 ){
+            System.out.println("Enter Valid Number");
+            playersCount = scan.nextInt();
+        }
         players= new ArrayList<>(playersCount);
         for(int i=0;i<playersCount;i++)
             players.add(Player.initializePlayer(scan));
