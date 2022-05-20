@@ -45,30 +45,22 @@ public class Player {
     }
 
     public boolean checkObject(Board board,int currentPos, int rollOut){
-        Object object = board.objectMap.get(currentPos);
-        Snake snake = null;
-        Ladder ladder = null;
-        if(object instanceof Snake){
-            snake = (Snake) object;
-        }
-        if(object instanceof Ladder){
-            ladder = (Ladder) object;
-        }
-
-        if(snake == null && ladder == null)
+        BoardObject object = board.objectMap.get(currentPos);
+        if(object == null)
             return false;
-
-        if(snake !=null) {
-            this.currPos = snake.getPath().getTo();
-            System.out.println(String.format("%s got bitten by %s", getName(), snake));
+        if(object.getType().contains("Snake")) {
+            this.currPos = object.getPath().getTo();
+            System.out.println(String.format("%s got bitten by %s", getName(), object));
             this.movesList.add(new Path(currentPos - rollOut, currPos));
+            return true;
         }
-        if(ladder !=null) {
-            this.currPos = ladder.getPath().getTo();
-            System.out.println(String.format("%s climbed %s", getName(), ladder));
+        if(object.getType().contains("Ladder")) {
+            this.currPos = object.getPath().getTo();
+            System.out.println(String.format("%s climbed %s", getName(), object));
             this.movesList.add(new Path(currentPos - rollOut, currPos));
+            return true;
         }
-        return true;
+        return false;
     }
 
     public void makeMove(Board board, int initialPos, int sixCount) throws InterruptedException {

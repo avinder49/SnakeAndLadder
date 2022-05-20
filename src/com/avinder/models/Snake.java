@@ -4,25 +4,18 @@ import com.avinder.constants.COLOUR;
 import com.avinder.constants.SNAKE;
 
 import java.util.Random;
-public class Snake {
+public class Snake extends BoardObject{
     private String name;
-    private String colour;
-    private Path path;
 
     public String getName() {return name;}
     public void setName(String name) {this.name = name;}
-    public String getColour() {return colour;}
-    public void setColour(String colour) {this.colour = colour;}
-    public Path getPath() {return path;}
-    public void setPath(Path path) {this.path = path;}
 
     public Snake(String name, String colour, Path path) {
+        super(path, colour,Snake.class.getName());
         this.name = name;
-        this.colour = colour;
-        this.path = path;
     }
-    public static Snake initializeSnakeRandomly(Board board){
-
+    public static Snake initializeObject(){
+        Board board = BoardObject.getBoard();
         String name = SNAKE.values()[new Random().nextInt(SNAKE.values().length)].name();
         String colour = COLOUR.values()[new Random().nextInt(COLOUR.values().length)].name();
         int from = 1+ new Random().nextInt(board.getSize()-1);
@@ -36,6 +29,6 @@ public class Snake {
 
     @Override
     public String toString() {
-        return "Snake{" + name + "} {" + colour + "} {" + path + "}";
+        return "Snake{" + this.name + "} {" + super.getColour() + "} {" + super.getPath() + "}";
     }
 }
