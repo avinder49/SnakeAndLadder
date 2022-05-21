@@ -1,6 +1,4 @@
 package com.avinder.models;
-import com.avinder.constants.COLOUR;
-import com.avinder.constants.SNAKE;
 
 import java.util.*;
 
@@ -10,18 +8,20 @@ public class Board {
     private int size;
     public Map<Integer,BoardObject> objectMap;
 
-    public Board(int size){
+    public Board(int size) throws Exception {// Whenever Board is set , then all those dependencies should be set , wherever board static Object is being referenced
+        if(size<=0){
+            throw new Exception("Enter Valid Size Of Board");
+        }
         this.size = size;
+        BoardObject.setBoard(this);
     }
 
-    public int getSize() {
-        return size;
-    }
-    public void setSize(int size) {
-        this.size = size;
-    }
+    public int getSize() {return size;}
+    public void setSize(int size) {this.size = size;}
+    public Map<Integer, BoardObject> getObjectMap() {return objectMap;}
+    public void setObjectMap(Map<Integer, BoardObject> objectMap) {this.objectMap = objectMap;}
 
-    protected static Board initializeBoard(Scanner scan ){
+    protected static Board initializeBoard(Scanner scan ) throws Exception {
         System.out.println("Enter the size of board");
         int boardSize = scan.nextInt();
         while(boardSize<=0){

@@ -14,7 +14,7 @@ public class Path {
                 "->" + to + '}';
     }
 
-    Path(int from , int to){
+    public Path(int from , int to){
         this.from = from;
         this.to = to;
     }

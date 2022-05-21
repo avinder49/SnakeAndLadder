@@ -32,6 +32,11 @@ public class Player {
     public List<Path> getMovesList() {return movesList;}
     public void setMovesList(List<Path> movesList) {this.movesList = movesList;}
 
+    public Player(String name){
+        this.name = name;
+        this.movesList = new ArrayList<>();
+    }
+
     Player(String name, int startingPos,List<Path> movesList){
         this.name = name;
         this.currPos = startingPos;
@@ -45,6 +50,9 @@ public class Player {
     }
 
     public boolean checkObject(Board board,int currentPos, int rollOut){
+        if(board.objectMap == null ){
+            return false;
+        }
         BoardObject object = board.objectMap.get(currentPos);
         if(object == null)
             return false;
@@ -96,7 +104,7 @@ public class Player {
 }
 
  class PlayerList {
-    static List<Player> players;
+    static Game game;
     protected static List<Player> initializePlayers(Scanner scan){
         System.out.println("Enter No of Players");
         int playersCount = scan.nextInt();
@@ -104,7 +112,7 @@ public class Player {
             System.out.println("Enter Valid Number");
             playersCount = scan.nextInt();
         }
-        players= new ArrayList<>(playersCount);
+        List<Player> players= new ArrayList<>(playersCount);
         for(int i=0;i<playersCount;i++)
             players.add(Player.initializePlayer(scan));
 
@@ -113,6 +121,7 @@ public class Player {
     }
 
     public static void showPlayersLocation(){
+        List<Player> players = game.getPlayerList();
         players.forEach(System.out::print);
         System.out.println();
         System.out.println();

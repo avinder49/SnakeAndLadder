@@ -18,8 +18,8 @@ public class Snake extends BoardObject{
         Board board = BoardObject.getBoard();
         String name = SNAKE.values()[new Random().nextInt(SNAKE.values().length)].name();
         String colour = COLOUR.values()[new Random().nextInt(COLOUR.values().length)].name();
-        int from = 1+ new Random().nextInt(board.getSize()-1);
-        int to = 1+ new Random().nextInt(board.getSize()-1);
+        int from = 1+ new Random().nextInt(board.getSize());
+        int to = 1+ new Random().nextInt(board.getSize());
         if(to > from) { to = to^from;  from = to^from;  to = to^from;}
 
         Snake snake = new Snake(name,colour,new Path(from, to));
