@@ -4,21 +4,13 @@ import com.avinder.constants.COLOUR;
 
 import java.util.Random;
 
-public class Ladder {
-    private String colour;
-    private Path path;
-
-    public String getColour() {return colour;}
-    public void setColour(String colour) {this.colour = colour;}
-    public Path getPath() {return path;}
-    public void setPath(Path path) {this.path = path;}
+public class Ladder extends BoardObject{
 
     public Ladder(String colour, Path path) {
-        this.colour = colour;
-        this.path = path;
+        super(path, colour,Ladder.class.getName());
     }
-    public static Ladder initializeLadderRandomly(Board board){
-
+    public static Ladder initializeLadderRandomly(){
+        Board board = BoardObject.getBoard();
         String colour = COLOUR.values()[new Random().nextInt(COLOUR.values().length)].name();
         int from = 1+ new Random().nextInt(board.getSize()-1);
         int to = 1+ new Random().nextInt(board.getSize()-1);
@@ -31,6 +23,6 @@ public class Ladder {
 
     @Override
     public String toString() {
-        return "Ladder{" + colour + "} {" + path + "}";
+        return "Ladder{" + super.getColour() + "} {" + super.getPath() + "}";
     }
 }
