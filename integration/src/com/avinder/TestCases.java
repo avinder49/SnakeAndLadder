@@ -6,6 +6,7 @@ import com.avinder.models.*;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -24,84 +25,39 @@ public class TestCases {
         }
     }
     @Test
-    public void testGameWithBoardOfValidSize() {
+    public void testGameWithBoardOfValidSize() throws Exception {
         Game g = new Game();
-        Board b = null;
-        try {
-            b = new Board(10);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        g.setBoard(b);
+        g.setBoard(new Board(10));
         assertNotNull(g.getBoard());
 
     }
 
     @Test
     public void testGameWithBoardOfValidSizeAndInvalidPlayers() {
-        Game g = new Game();
-        Board b = null;
         try {
-            b = new Board(10);
+            Game.initializeGame(10,null);
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        g.setBoard(b);
-        assertNotNull(g.getBoard());
-        try {
-            g.setPlayerList(null);
-        } catch (Exception e) {
-            assertNull(g.getPlayerList());
             assertEquals("Not able to set list of players for the game",e.getMessage());
         }
-        assertNull(g.getPlayerList());
 
     }
 
     @Test
     public void testGameWithBoardOfValidSizeAnd0Players() {
-        Game g = new Game();
-        Board b = null;
         try {
-            b = new Board(10);
+            Game.initializeGame(10,new ArrayList<>());
         } catch (Exception e) {
-            e.printStackTrace();
-        }
-        g.setBoard(b);
-        assertNotNull(g.getBoard());
-        try {
-            g.setPlayerList(new ArrayList<>(0));
-        } catch (Exception e) {
-            assertNull(g.getPlayerList());
             assertEquals("Not able to set list of players for the game",e.getMessage());
         }
 
     }
 
     @Test
-    public void testGameWithBoardOfValidSizeAnd4Players() throws Exception {
-        Game g = new Game();
-        Board b = null;
+    public void testGameWithBoardOfValidSizeAnd4Players(){
         try {
-            b = new Board(10);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        g.setBoard(b);
-        assertNotNull(g.getBoard());
-        g.setPlayerList(new ArrayList<>(){
-            {
-                add(new Player("A"));
-                add(new Player("B"));
-                add(new Player("C"));
-                add(new Player("D"));
-            }
-        });
-        assertNotNull(g.getPlayerList());
-        List<Player> players = g.getPlayerList();
-
-        assertEquals(players.size(),4);
-        try {
+            Game g = Game.initializeGame(10, Arrays.asList("A", "B", "C" , "D"));
+            g.setCurrentMovingPlayer(null);
             g.startGame();
         } catch (Exception e) {
             assertEquals("No current Moving Player Initialized",e.getMessage());
@@ -109,31 +65,10 @@ public class TestCases {
     }
 
     @Test
-    public void testGameWithBoardOfValidSizeAnd4PlayersAndCurrentMovingPlayerTo1stPlayer() throws Exception {
-        Game g = new Game();
-        Board b = null;
-        try {
-            b = new Board(10);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        g.setBoard(b);
-        assertNotNull(g.getBoard());
-        g.setPlayerList(new ArrayList<>(){
-            {
-                add(new Player("A"));
-                add(new Player("B"));
-                add(new Player("C"));
-                add(new Player("D"));
-            }
-        });
-        assertNotNull(g.getPlayerList());
-        List<Player> players = g.getPlayerList();
-
-        assertEquals(players.size(),4);
-        g.setCurrentMovingPlayer(players.get(0));
-        g.setCurrentMovingPlayerIndex(0);
-
+    public void testGameWithBoardOfValidSizeAnd4PlayersWithNoBoardObjects() throws Exception {
+        Game g = Game.initializeGame(10, Arrays.asList("A", "B", "C" , "D"));
+        g.getBoard().setObjectMap(null);
+        System.out.println(g);
         try {
             assertNotNull(g.startGame());
         } catch (Exception e) {
@@ -142,40 +77,8 @@ public class TestCases {
     }
 
     @Test
-    public void testGameWithBoardOfValidSizeAnd4PlayersAndCurrentMovingPlayerTo1stPlayerWithBoardObjects() throws Exception {
-        Game g = new Game();
-        Board b = null;
-        try {
-            b = new Board(10);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        b.setObjectMap(new TreeMap<>(){
-            {
-                put(5,new Snake(SNAKE.COBRA.name(), COLOUR.BLUE.name(), new Path(2,5)));
-                put(9,new Snake(SNAKE.COBRA.name(), COLOUR.RED.name(), new Path(1,9)));
-                put(3,new Ladder( COLOUR.BLUE.name(), new Path(3,8)));
-                put(4,new Ladder(COLOUR.GREEN.name(), new Path(4,6)));
-
-            }
-        });
-        g.setBoard(b);
-        assertNotNull(g.getBoard());
-        g.setPlayerList(new ArrayList<>(){
-            {
-                add(new Player("A"));
-                add(new Player("B"));
-                add(new Player("C"));
-                add(new Player("D"));
-            }
-        });
-        assertNotNull(g.getPlayerList());
-        List<Player> players = g.getPlayerList();
-
-        assertEquals(players.size(),4);
-        g.setCurrentMovingPlayer(players.get(0));
-        g.setCurrentMovingPlayerIndex(0);
-
+    public void testGameWithBoardOfValidSizeAnd4PlayersAWithBoardObjects() throws Exception {
+        Game g = Game.initializeGame(10, Arrays.asList("A", "B", "C" , "D"));
         try {
             assertNotNull(g.startGame());
         } catch (Exception e) {

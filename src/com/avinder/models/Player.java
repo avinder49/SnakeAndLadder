@@ -12,9 +12,14 @@ public class Player {
     private String name;
     private int currPos;
 
-    @Override
-    public String toString() {
-        return  name + " {" + currPos + "}\t";
+    Player(String name, int startingPos,List<Path> movesList){
+        this.name = name;
+        this.currPos = startingPos;
+        this.movesList = movesList;
+    }
+
+    public static Player initializePlayer(String playerName ){
+        return new Player(playerName,0,new ArrayList<>());
     }
 
     public String getName() {
@@ -31,23 +36,6 @@ public class Player {
     }
     public List<Path> getMovesList() {return movesList;}
     public void setMovesList(List<Path> movesList) {this.movesList = movesList;}
-
-    public Player(String name){
-        this.name = name;
-        this.movesList = new ArrayList<>();
-    }
-
-    Player(String name, int startingPos,List<Path> movesList){
-        this.name = name;
-        this.currPos = startingPos;
-        this.movesList = movesList;
-    }
-
-    public static Player initializePlayer(Scanner scan ){
-        System.out.println("Enter Player Name");
-        String playerName = scan.next();
-        return new Player(playerName,0,new ArrayList<>());
-    }
 
     public boolean checkObject(Board board,int currentPos, int rollOut){
         if(board.objectMap == null ){
@@ -81,7 +69,7 @@ public class Player {
 
         int rollOut = 1+ new Random().nextInt(DICE_LIMIT);
         System.out.println("Rolled number by " + this.getName() + " is " + rollOut);
-        Thread.sleep(1000);
+//        Thread.sleep(1000);
         int prevPos = this.getCurrPos();
         this.currPos += rollOut;
 
@@ -101,29 +89,27 @@ public class Player {
         return this.currPos == board.getSize();
     }
 
+    @Override
+    public String toString() {
+        return  name + " {" + currPos + "}\t";
+    }
+
 }
 
  class PlayerList {
-    static Game game;
-    protected static List<Player> initializePlayers(Scanner scan){
-        System.out.println("Enter No of Players");
-        int playersCount = scan.nextInt();
-        while(playersCount<=0 ){
-            System.out.println("Enter Valid Number");
-            playersCount = scan.nextInt();
+    protected static List<Player> initializePlayers(List<String> playersName) throws Exception {
+        List<Player> players= new ArrayList<>();
+        if(playersName==null || playersName.isEmpty()){
+            throw new Exception("Not able to set list of players for the game");
         }
-        List<Player> players= new ArrayList<>(playersCount);
-        for(int i=0;i<playersCount;i++)
-            players.add(Player.initializePlayer(scan));
-
-        System.out.println("Players Added to Game");
+        playersName.forEach(name->players.add(Player.initializePlayer(name)));
+        System.out.print("Players Added to Game\t");
+        showPlayersLocation(players);
         return players;
     }
 
-    public static void showPlayersLocation(){
-        List<Player> players = game.getPlayerList();
+    public static void showPlayersLocation(List<Player> players){
         players.forEach(System.out::print);
-        System.out.println();
         System.out.println();
     }
 }

@@ -21,13 +21,7 @@ public class Board {
     public Map<Integer, BoardObject> getObjectMap() {return objectMap;}
     public void setObjectMap(Map<Integer, BoardObject> objectMap) {this.objectMap = objectMap;}
 
-    protected static Board initializeBoard(Scanner scan ) throws Exception {
-        System.out.println("Enter the size of board");
-        int boardSize = scan.nextInt();
-        while(boardSize<=0){
-            System.out.println("Enter Valid Size Of Board");
-            boardSize = scan.nextInt();
-        }
+    public static Board initializeBoard(int boardSize) throws Exception {
         Board board=  new Board(boardSize*boardSize);
         System.out.println("Board initialized");
         board.objectMap = new TreeMap<>();
